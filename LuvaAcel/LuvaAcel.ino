@@ -12,6 +12,8 @@
 #define Register_Z0 0x36
 #define Register_Z1 0x37
 
+#define TOL 0.3f
+
 // Endereco I2C do sensor : 83 em decimal ou 0x53
 int ADXAddress = 0x53;  // the default 7-bit slave address
 int reading = 0;
@@ -20,6 +22,45 @@ int X0,X1,X_out;
 int Y0,Y1,Y_out;
 int Z1,Z0,Z_out;
 double Xg,Yg,Zg;
+
+void RecebeAcel();
+
+void setup()
+{
+  Wire.begin();                
+  Serial.begin(9600);    
+  delay(100);
+  // enable to measute g data
+  Wire.beginTransmission(ADXAddress);
+  Wire.write(Register_2D);
+  Wire.write(8);                //measuring enable
+  Wire.endTransmission();     // stop transmitting
+}
+
+void loop()
+{
+  RecebeAcel();
+  if(Xg > TOL || Xg < -TOL || Yg < -TOL || Yg > TOL) {
+    if(Yg < -TOL && Yg >= -1) { //frente
+      Serial.print("Y");
+      Serial.println(Yg);
+    } else if(Yg > TOL && Yg <= 1) { //tras
+      Serial.print("Y");
+      Serial.println(Yg);
+    } else if(Xg > TOL && Xg <= 1) { //direita
+      Serial.print("X");
+      Serial.println(Xg);
+    } else if(Xg < -TOL && Xg >= -1) { //esquerda
+      Serial.print("X");
+      Serial.println(Xg);
+    }
+  } else {
+      Serial.print("N");
+      Serial.println(0.0);
+  }
+  
+  delay(50);
+}
 
 void RecebeAcel() {
   //--------------X
@@ -66,34 +107,4 @@ void RecebeAcel() {
   Xg=X_out/256.0;
   Yg=Y_out/256.0;
   Zg=Z_out/256.0;
-}
-
-void setup()
-{
-  Wire.begin();                
-  Serial.begin(9600);    
-  delay(100);
-  // enable to measute g data
-  Wire.beginTransmission(ADXAddress);
-  Wire.write(Register_2D);
-  Wire.write(8);                //measuring enable
-  Wire.endTransmission();     // stop transmitting
-}
-
-void loop()
-{
-  RecebeAcel();
-  if(Xg > TOL || Xg < -TOL || Yg < -TOL || Yg > TOL) {
-    if(Yg < 0) { //frente
-      
-    } else if(Yg > 0) { //tras
-     
-    } else if(Xg > 0) { //direita
-      
-    } else if(Xg < 0) { //esquerda
-      
-    }
-  }
-  
-  delay(50);
 }
