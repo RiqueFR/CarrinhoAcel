@@ -59,7 +59,7 @@ void loop()
       Serial.println(0.0);
   }
   
-  delay(50);
+  delay(100);
 }
 
 void RecebeAcel() {
