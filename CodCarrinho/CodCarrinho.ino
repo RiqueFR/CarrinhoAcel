@@ -11,8 +11,6 @@ void setup() {
   int i;
   for (i = 0; i < 2; i++) {
     pinMode(rodadir[i], OUTPUT);
-  }
-  for (i = 0; i < 2; i++) {
     pinMode(rodaesq[i], OUTPUT);
   }
   Serial.begin(9600);
