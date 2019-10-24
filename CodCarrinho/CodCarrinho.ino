@@ -67,24 +67,24 @@ void loop() {
   /*Uso de condicoes para direcoes e convertData para tratamento da angulacao para velocidade*/
   if (ehposs) {
     Serial.println(convertData(data));
-    if (direcao == "X" && data > 0) {
+    if (direcao == 'X' && data > 0) {
       //INVERTE DIRECAO RODA DIREITA
       analogWrite(pinMotor1, LOW);
       analogWrite(pinMotor2, convertData(data));
       analogWrite(pinMotor3, convertData(data));
       analogWrite(pinMotor4, LOW);
-    } else if (direcao == "X" && data < 0) {
+    } else if (direcao == 'X' && data < 0) {
       //INVERTE DIRECAO RODA ESQUERDA
       analogWrite(pinMotor1, convertData(data));
       analogWrite(pinMotor2, LOW);
       analogWrite(pinMotor3, LOW);
       analogWrite(pinMotor4, convertData(data));
-    } else if (direcao == "Y" && data < 0) {//frente
+    } else if (direcao == 'Y' && data < 0) {//frente
       analogWrite(pinMotor1, LOW);
       analogWrite(pinMotor2, convertData(data));
       analogWrite(pinMotor3, LOW);
       analogWrite(pinMotor4, convertData(data));
-    } else if (direcao == "Y" && data > 0) {
+    } else if (direcao == 'Y' && data > 0) {
       //INVERTE DIRECAO DAS RODAS
       analogWrite(pinMotor1, convertData(data));
       analogWrite(pinMotor2, LOW);
