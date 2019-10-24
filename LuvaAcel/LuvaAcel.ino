@@ -1,4 +1,4 @@
-// Acelerometro ADXL345
+ // Acelerometro ADXL345
 
 
 #include <Wire.h>
