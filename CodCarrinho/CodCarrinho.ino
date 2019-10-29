@@ -1,62 +1,100 @@
-const int rodadir[3] = {/*PINOS PONTE H PARA DIREITA*/}
-const int rodaesq[3] = {/*PINOS PONTE H PARA ESQUERDA*/}
 
+#define pinMotor1 9
+#define pinMotor2 10
+#define pinMotor3 5
+#define pinMotor4 6
 
-int convertData(float data){
-  if(data<0)data = -data;
-  return vel = 255 * data;
+int cont2 = 0;
+
+int convertData(float data) {
+  if (data < 0)data = -data;
+  return 256 * data;
 }
 
 void setup() {
-  // put your setup code here, to run once:
-  for(i=0;i<3;i++){
-    pinMode(/*rodadireita*/[i], OUTPUT);
-  }
-  for(i=0;i<3;i++){
-    pinMode(/*rodaesquerda*/, OUTPUT);
-  }
+  int i;
+  pinMode(pinMotor1, OUTPUT);
+  pinMode(pinMotor2, OUTPUT);
+  pinMode(pinMotor3, OUTPUT);
+  pinMode(pinMotor4, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  if(Serial.available > 0){
-    float data = Serial.read();
-    char direcao = Serial.read();
-  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /*Comunicacao para receber direcao e angulacao*/
+  float val = 0;
+  int cont = 0, numC = 0;
+  bool ehposs = false;
+  char let = 'N';
   // put your main code here, to run repeatedly:
-  if(direcao == "X" && data > 0){
-    //INVERTE DIRECAO RODA DIREITA
-    digitalWrite(rodaesq[0], LOW);
-    digitalWrite(rodaesq[1], HIGH);
-    digitalWrite(rodadir[0], HIGH);
-    digitalWrite(rodadir[1], LOW);
-    analogWrite(convertData(data), /*Pino roda esquerda*/);
-    analogWrite(convertData(data), /*Pino roda direita*/);
+
+  numC = Serial.available();
+  if (numC) {
+    char c[numC];
+    while (cont <= numC) {
+      c[cont] = (char)Serial.read();
+      cont++;
+    }
+    let = c[0];
+    cont = 0;
+    if (c[0] == 'X' || c[0] == 'Y' || c[0] == 'N') {
+      if (c[1] == '-') {
+        val += c[2] - '0';
+        val += (c[4] - '0') / 10.0;
+        val += (c[5] - '0') / 100.0;
+        val *= -1;
+      } else {
+        val += c[1] - '0';
+        val += (c[3] - '0') / 10.0;
+        val += (c[4] - '0') / 100.0;
+      }
+      if (val >= -1 && val <= 1) {
+        ehposs = true;
+      } else {
+        ehposs = false;
+      }
+    }
   }
-  if(direcao == "X" && data < 0){
-    //INVERTE DIRECAO RODA ESQUERDA
-    digitalWrite(rodaesq[0], HIGH);
-    digitalWrite(rodaesq[1], LOW);
-    digitalWrite(rodadir[0], LOW);
-    digitalWrite(rodadir[1], HIGH);
-    analogWrite(convertData(data), /*Pino roda esquerda*/);
-    analogWrite(convertData(data), /*Pino roda direita*/);
+  delay(50);
+  if(ehposs) {
+    Serial.println(let);
+    Serial.println(val);
   }
-  if(direcao == "Y" && data > 0){
-    digitalWrite(rodaesq[0], LOW);
-    digitalWrite(rodaesq[1], HIGH);
-    digitalWrite(rodadir[0], LOW);
-    digitalWrite(rodadir[1], HIGH);
-    analogWrite(convertData(data), /*Pino roda esquerda*/);
-    analogWrite(convertData(data), /*Pino roda direita*/);
-  }
-  if(direcao == "Y" && data < 0){
-    //INVERTE DIRECAO DAS RODAS
-    digitalWrite(rodaesq[0], HIGH);
-    digitalWrite(rodaesq[1], LOW);
-    digitalWrite(rodadir[0], HIGH);
-    digitalWrite(rodadir[1], LOW);
-    analogWrite(convertData(data), /*Pino roda esquerda*/);
-    analogWrite(convertData(data), /*Pino roda direita*/
+  float data = val;
+  char direcao = let;
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /*Uso de condicoes para direcoes e convertData para tratamento da angulacao para velocidade*/
+  if (ehposs) {
+    Serial.println(convertData(data));
+    if (direcao == 'X' && data > 0) {
+      //INVERTE DIRECAO RODA DIREITA
+      analogWrite(pinMotor1, LOW);
+      analogWrite(pinMotor2, convertData(data));
+      analogWrite(pinMotor3, convertData(data));
+      analogWrite(pinMotor4, LOW);
+    } else if (direcao == 'X' && data < 0) {
+      //INVERTE DIRECAO RODA ESQUERDA
+      analogWrite(pinMotor1, convertData(data));
+      analogWrite(pinMotor2, LOW);
+      analogWrite(pinMotor3, LOW);
+      analogWrite(pinMotor4, convertData(data));
+    } else if (direcao == 'Y' && data < 0) {//frente
+      analogWrite(pinMotor1, LOW);
+      analogWrite(pinMotor2, convertData(data));
+      analogWrite(pinMotor3, LOW);
+      analogWrite(pinMotor4, convertData(data));
+    } else if (direcao == 'Y' && data > 0) {
+      //INVERTE DIRECAO DAS RODAS
+      analogWrite(pinMotor1, convertData(data));
+      analogWrite(pinMotor2, LOW);
+      analogWrite(pinMotor3, convertData(data));
+      analogWrite(pinMotor4, LOW);
+    } else {
+      analogWrite(pinMotor1, LOW);
+      analogWrite(pinMotor2, LOW);
+      analogWrite(pinMotor3, LOW);
+      analogWrite(pinMotor4, LOW);
+    }
   }
 }
