@@ -1,4 +1,4 @@
- // Acelerometro ADXL345
+// Acelerometro ADXL345
 
 
 #include <Wire.h>
@@ -28,7 +28,7 @@ void RecebeAcel();
 void setup()
 {
   Wire.begin();                
-  Serial.begin(9600);    
+  Serial.begin(38400);    
   delay(100);
   // enable to measute g data
   Wire.beginTransmission(ADXAddress);

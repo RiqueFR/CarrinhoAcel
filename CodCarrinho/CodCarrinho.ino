@@ -1,4 +1,3 @@
-
 #define pinMotor1 9
 #define pinMotor2 10
 #define pinMotor3 5
@@ -17,7 +16,7 @@ void setup() {
   pinMode(pinMotor2, OUTPUT);
   pinMode(pinMotor3, OUTPUT);
   pinMode(pinMotor4, OUTPUT);
-  Serial.begin(9600);
+  Serial.begin(38400);
 }
 
 void loop() {
@@ -67,13 +66,13 @@ void loop() {
   /*Uso de condicoes para direcoes e convertData para tratamento da angulacao para velocidade*/
   if (ehposs) {
     Serial.println(convertData(data));
-    if (direcao == 'X' && data > 0) {
+    if (direcao == 'X' && data < 0) {
       //INVERTE DIRECAO RODA DIREITA
       analogWrite(pinMotor1, LOW);
       analogWrite(pinMotor2, convertData(data));
       analogWrite(pinMotor3, convertData(data));
       analogWrite(pinMotor4, LOW);
-    } else if (direcao == 'X' && data < 0) {
+    } else if (direcao == 'X' && data > 0) {
       //INVERTE DIRECAO RODA ESQUERDA
       analogWrite(pinMotor1, convertData(data));
       analogWrite(pinMotor2, LOW);
